@@ -1,24 +1,27 @@
 export default async function handler(req, res) {
   try {
-    // 気象庁 潮位（例：横須賀）
-    const tideResponse = await fetch(
-      "https://www.jma.go.jp/bosai/tide/data/forecast/1401.json"
-    );
+    // 三浦海岸・野比海岸に最も近い観測点：横須賀（気象庁）
+    const stationCode = "46106"; // 横須賀
 
-    const tideData = await tideResponse.json();
+    // 気象庁 海洋観測データ（JSON）
+    const url = `https://www.jma.go.jp/bosai/amedas/data/point/${stationCode}.json`;
 
-    // 気象庁 波浪（例データ）
-    const waveResponse = await fetch(
-      "https://www.jma.go.jp/bosai/wave/data/forecast/1401.json"
-    );
+    const response = await fetch(url);
 
-    const waveData = await waveResponse.json();
+    if (!response.ok) {
+      throw new Error("JMA fetch failed");
+    }
+
+    const data = await response.json();
 
     res.status(200).json({
-      tide: tideData,
-      wave: waveData,
+      message: "Data fetched",
+      raw: data
     });
+
   } catch (error) {
-    res.status(500).json({ error: "Data fetch failed" });
+    res.status(500).json({
+      error: error.message
+    });
   }
 }
