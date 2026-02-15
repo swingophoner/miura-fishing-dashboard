@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Miura Fishing Dashboard</title>
+<style>
+body {
+  background: #111;
+  color: #fff;
+  font-family: Arial;
+  padding: 20px;
+}
+.card {
+  background: #1e1e1e;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+</style>
+</head>
+<body>
+
+<h1>三浦・野比 海況ダッシュボード</h1>
+
+<div class="card">
+<h2>潮位</h2>
+<pre id="tide">Loading...</pre>
+</div>
+
+<div class="card">
+<h2>波高</h2>
+<pre id="wave">Loading...</pre>
+</div>
+
+<script>
+async function loadData() {
+  const res = await fetch('/api/data');
+  const data = await res.json();
+
+  document.getElementById("tide").textContent =
+    JSON.stringify(data.tide, null, 2);
+
+  document.getElementById("wave").textContent =
+    JSON.stringify(data.wave, null, 2);
+}
+
+loadData();
+</script>
+
+</body>
+</html>
